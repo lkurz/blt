@@ -9,6 +9,9 @@ The project release numbers follow [Semantic Versioning](http://semver.org/spec/
 
 ## [Unreleased] - Release date yyyy-mm-dd
 
+### Changed
+- Removed default use of `/bigobj` flag for Visual Studio builds. Projects add this flag explicitly if needed for their windows builds.
+
 ## [Version 0.7.1] - Release date 2025-09-04
 
 ### Changed
