@@ -16,7 +16,7 @@
 # use CMAKE_BUILD_TOOL to identify visual studio
 # and CMAKE_CXX_COMPILER_ID for all other cases
 
-if("${CMAKE_BUILD_TOOL}" MATCHES "(msdev|devenv|nmake|MSBuild)")
+if(MSVC OR ("${CMAKE_BUILD_TOOL}" MATCHES "(msdev|devenv|nmake|MSBuild)"))
     set(COMPILER_FAMILY_IS_MSVC 1)
     message(STATUS "Compiler family is MSVC")
 
