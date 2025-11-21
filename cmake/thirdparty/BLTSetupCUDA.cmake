@@ -3,6 +3,13 @@
 # 
 # SPDX-License-Identifier: (BSD-3-Clause)
 
+# Use legacy FindCUDA. This was deprecated in 3.10 and removed in 3.27.
+# TODO: Do not rely on this setting and use the new CUDA finding mechanism instead:
+# https://cmake.org/cmake/help/latest/module/FindCUDA.html
+if(POLICY CMP0146)
+  cmake_policy(SET CMP0146 OLD)
+endif()
+
 ################################
 # Sanity Checks
 ################################
