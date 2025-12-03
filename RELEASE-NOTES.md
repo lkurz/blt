@@ -12,6 +12,11 @@ The project release numbers follow [Semantic Versioning](http://semver.org/spec/
 ### Changed
 - Removed default use of `/bigobj` flag for Visual Studio builds. Projects should add this flag explicitly if needed for windows builds.
 
+### Fixed
+- In non-mpi configurations, `blt_add_test` will now throw a `FATAL_ERROR` if the user provides `NUM_MPI_RANKS`
+  and the requested number of ranks is greater than 1. Previously, if `MPI_EXECUTABLE` was not defined
+  `blt_add_test` would prepend the test command with the value of `NUM_MPI_RANKS`, and the test would fail to run.
+
 ## [Version 0.7.1] - Release date 2025-09-04
 
 ### Changed
