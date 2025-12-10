@@ -11,6 +11,8 @@ The project release numbers follow [Semantic Versioning](http://semver.org/spec/
 
 ### Changed
 - Removed default use of `/bigobj` flag for Visual Studio builds. Projects should add this flag explicitly if needed for windows builds.
+- Removed `-Winline` from being added to GoogleTest for Clang/Intel as it is a noop and caused a warning on Intel.
+- Toggle GoogleTest adding `-Wno-implicit-float-size-conversion` or `-Wno-sycl-implicit-float-size-conversion` based on Intel version.
 
 ### Fixed
 - In non-mpi configurations, `blt_add_test` will now throw a `FATAL_ERROR` if the user provides `NUM_MPI_RANKS`
