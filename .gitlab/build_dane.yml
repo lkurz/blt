@@ -36,8 +36,13 @@ dane-intel_2022_1_0_cxx17:
     HOST_CONFIG: "intel@2022.1.0-c++17.cmake"
   extends: [.build_script, .on_dane]
 
+dane-intel_2025_2_0_cxx20:
+  variables:
+    HOST_CONFIG: "intel@2025.2.0-c++20.cmake"
+  extends: [.build_script, .on_dane]
+
 ####
-# HIP project tests
+# Project tests
 dane_openmp_mpi_fortran_tests:
   variables:
     ENABLED_BLT_TESTS: "mpi-cpp-fortran,openmp-cpp-fortran,openmp-mpi-cpp"
