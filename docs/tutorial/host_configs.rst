@@ -87,8 +87,8 @@ to run the unit tests that are using MPI and CUDA:
   Total Test time (real) =   6.80 sec
 
 
-Building and Testing on Ray
----------------------------
+Building and Testing on Matrix
+------------------------------
 
 Here is how you can use the host-config file to configure a build of the
 ``calc_pi``  project with MPI and CUDA enabled on the LLNL's Matrix cluster:
@@ -101,7 +101,7 @@ Here is how you can use the host-config file to configure a build of the
     # configure using host-config
     cmake -C ../../host-configs/llnl/toss_4_x86_64_ib/gcc@10.3.1_nvcc.cmake  ..
 
-And here is how to build and test the code on Ray:
+And here is how to build and test the code on Matrix:
 
 .. code-block:: console
 
