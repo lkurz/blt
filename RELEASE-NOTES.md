@@ -19,6 +19,7 @@ The project release numbers follow [Semantic Versioning](http://semver.org/spec/
 - In non-mpi configurations, `blt_add_test` will now throw a `FATAL_ERROR` if the user provides `NUM_MPI_RANKS`
   and the requested number of ranks is greater than 1. Previously, if `MPI_EXECUTABLE` was not defined
   `blt_add_test` would prepend the test command with the value of `NUM_MPI_RANKS`, and the test would fail to run.
+- GoogleTest: Quiet warning on clang@21 about implicit cast (https://github.com/google/googletest/commit/fa8438ae6b70c57010177de47a9f13d7041a6328)
 
 ## [Version 0.7.1] - Release date 2025-09-04
 
