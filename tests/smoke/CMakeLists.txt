@@ -1,4 +1,4 @@
-# Copyright (c) 2017-2024, Lawrence Livermore National Security, LLC and
+# Copyright (c) 2017-2025, Lawrence Livermore National Security, LLC and
 # other BLT Project Developers. See the top-level LICENSE file for details
 # 
 # SPDX-License-Identifier: (BSD-3-Clause)
@@ -112,10 +112,11 @@ endif()
 if (ENABLE_MPI)
     blt_add_executable(NAME blt_mpi_smoke
                        SOURCES blt_mpi_smoke.cpp
-                       OUTPUT_DIR ${TEST_OUTPUT_DIRECTORY} 
+                       OUTPUT_DIR ${TEST_OUTPUT_DIRECTORY}
                        DEPENDS_ON blt::mpi
                        FOLDER blt/tests )
-
+    # This smoke test explicitly checks the number of MPI tasks.
+    # If NUM_MPI_TASKS is changed here, you must update blt_mpi_smoke.cpp.
     blt_add_test(NAME blt_mpi_smoke
                  COMMAND blt_mpi_smoke
                  NUM_MPI_TASKS 4)

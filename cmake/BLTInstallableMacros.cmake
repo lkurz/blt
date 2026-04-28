@@ -1,4 +1,4 @@
-# Copyright (c) 2017-2024, Lawrence Livermore National Security, LLC and
+# Copyright (c) 2017-2025, Lawrence Livermore National Security, LLC and
 # other BLT Project Developers. See the top-level LICENSE file for details
 # 
 # SPDX-License-Identifier: (BSD-3-Clause)
@@ -540,7 +540,7 @@ function(blt_convert_to_system_includes)
                 endif()
 
                 list(APPEND _target_list ${_target})
-            elseif(NOT ${arg_QUIET)
+            elseif(NOT ${arg_QUIET})
                 message(WARNING "${_target} does not exist!")
             endif()
 
