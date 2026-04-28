@@ -193,6 +193,8 @@ if(ENABLE_BENCHMARKS)
                              LIBRARIES benchmark ${RT_LIBRARIES}
                              TREAT_INCLUDES_AS_SYSTEM ON)
 
+        target_compile_options(benchmark PRIVATE -Wno-undef)
+
         list(APPEND _blt_tpl_targets gbenchmark)
     endif()
 
