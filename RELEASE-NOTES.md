@@ -14,6 +14,7 @@ The project release numbers follow [Semantic Versioning](http://semver.org/spec/
 
 ### Changed
 - Modified `blt_convert_to_system_includes` to handle multiple targets and recursively update includes for dependencies.
+- Modified `blt_add_sphinx_target` to allow setting sphinx source and configure directories.
 - Updated GoogleBenchmark to 1.9.1
 
 ### Fixed
