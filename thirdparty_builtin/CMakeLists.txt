@@ -1,4 +1,4 @@
-# Copyright (c) 2017-2024, Lawrence Livermore National Security, LLC and
+# Copyright (c) 2017-2025, Lawrence Livermore National Security, LLC and
 # other BLT Project Developers. See the top-level LICENSE file for details
 # 
 # SPDX-License-Identifier: (BSD-3-Clause)
@@ -120,8 +120,8 @@ if(ENABLE_TESTS)
         set (INSTALL_GTEST OFF CACHE BOOL "")
 
         # Enable builtin google test 
-        add_subdirectory(googletest
-                         ${BLT_BUILD_DIR}/thirdparty_builtin/googletest)
+        add_subdirectory(googletest-1.16.0
+                         ${BLT_BUILD_DIR}/thirdparty_builtin/googletest-1.16.0)
 
         if(UNIX AND NOT APPLE)
             find_package( Threads )
@@ -192,6 +192,8 @@ if(ENABLE_BENCHMARKS)
                              INCLUDES  ${benchmark_SOURCE_DIR}/include ${benchmark_SOURCE_DIR}
                              LIBRARIES benchmark ${RT_LIBRARIES}
                              TREAT_INCLUDES_AS_SYSTEM ON)
+
+        target_compile_options(benchmark PRIVATE -Wno-undef)
 
         list(APPEND _blt_tpl_targets gbenchmark)
     endif()
