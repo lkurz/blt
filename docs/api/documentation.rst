@@ -13,7 +13,7 @@ blt_add_doxygen_target
 
 .. code-block:: cmake
 
-    blt_add_doxygen_target(TARGET [doxygen_target_name])
+    blt_add_doxygen_target(TARGET doxygen_target_name)
 
 Creates a build target for invoking Doxygen to generate docs. Expects to
 find a ``Doxyfile.in`` in the directory the macro is called in.
@@ -30,7 +30,7 @@ blt_add_sphinx_target
 
 .. code-block:: cmake
 
-    blt_add_sphinx_target(TARGET [sphinx_target_name]
+    blt_add_sphinx_target(TARGET sphinx_target_name
                           SOURCE_DIR [source_dir]
                           CONF_DIR [conf_dir]
                           DEPENDS [dep1 ...])
