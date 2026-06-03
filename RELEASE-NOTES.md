@@ -9,6 +9,10 @@ The project release numbers follow [Semantic Versioning](http://semver.org/spec/
 
 ## [Unreleased] - Release date yyyy-mm-dd
 
+### Changed
+- Modified `blt_add_sphinx_target` to allow setting sphinx source and configure directories.
+- Modified `blt_add_sphinx_target` and `blt_add_doxygen_target` requiring the first argument preceed with TARGET.
+
 ## [Version 0.7.2] - Release date 2026-05-01
 
 ### Changed
@@ -37,7 +41,6 @@ The project release numbers follow [Semantic Versioning](http://semver.org/spec/
 
 ### Changed
 - Modified `blt_convert_to_system_includes` to handle multiple targets and recursively update includes for dependencies.
-- Modified `blt_add_sphinx_target` to allow setting sphinx source and configure directories.
 - Modified `blt_split_source_list_by_language` to accept a `CXX_LIST` argument for splitting out C and CXX sources. If not specified, the `C_LIST` will contain both C and C++ sources.
 - HIP support now uses enable_language(HIP), and specifying a HIP compiler must use the variable `CMAKE_HIP_COMPILER`.
 - Updated GoogleBenchmark to 1.9.1
