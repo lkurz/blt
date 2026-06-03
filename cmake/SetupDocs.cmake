@@ -20,7 +20,7 @@ endif()
 
 
 ##------------------------------------------------------------------------------
-## blt_add_doxygen_target(TARGET [doxygen_target_name])
+## blt_add_doxygen_target(TARGET doxygen_target_name)
 ##
 ## Creates a build target for invoking doxygen to generate docs
 ##------------------------------------------------------------------------------
@@ -37,6 +37,11 @@ macro(blt_add_doxygen_target)
     if(DOXYGEN_UNPARSED_ARGUMENTS)
         message(FATAL_ERROR
             "blt_add_doxygen_target received unexpected arguments: ${DOXYGEN_UNPARSED_ARGUMENTS}")
+    endif()
+
+    if(NOT DOXYGEN_TARGET)
+        message(FATAL_ERROR
+            "blt_add_doxygen_target requires TARGET to be specified")
     endif()
 
     # add a target to generate API documentation with Doxygen
@@ -57,7 +62,7 @@ endmacro(blt_add_doxygen_target)
 
 
 ##------------------------------------------------------------------------------
-## blt_add_sphinx_target(TARGET       [sphinx_target_name]
+## blt_add_sphinx_target(TARGET       sphinx_target_name
 ##                       SOURCE_DIR   [source_dir]
 ##                       CONF_DIR     [conf_dir]
 ##                       DEPENDS      [dep1 ...])
@@ -81,6 +86,11 @@ macro(blt_add_sphinx_target)
     if(SPHINX_UNPARSED_ARGUMENTS)
         message(FATAL_ERROR
             "blt_add_sphinx_target received unexpected arguments: ${SPHINX_UNPARSED_ARGUMENTS}")
+    endif()
+
+    if(NOT SPHINX_TARGET)
+        message(FATAL_ERROR
+            "blt_add_sphinx_target requires TARGET to be specified")
     endif()
 
     if(NOT SPHINX_SOURCE_DIR)
