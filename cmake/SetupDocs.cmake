@@ -20,40 +20,54 @@ endif()
 
 
 ##------------------------------------------------------------------------------
-## blt_add_doxygen_target(doxygen_target_name)
+## blt_add_doxygen_target(TARGET [doxygen_target_name])
 ##
 ## Creates a build target for invoking doxygen to generate docs
 ##------------------------------------------------------------------------------
-macro(blt_add_doxygen_target doxygen_target_name)
+macro(blt_add_doxygen_target)
+    set(_doxygen_options)
+    set(_doxygen_single_value_args TARGET)
+    set(_doxygen_multi_value_args)
+    cmake_parse_arguments(DOXYGEN
+                          "${_doxygen_options}"
+                          "${_doxygen_single_value_args}"
+                          "${_doxygen_multi_value_args}"
+                          ${ARGN})
+
+    if(DOXYGEN_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR
+            "blt_add_doxygen_target received unexpected arguments: ${DOXYGEN_UNPARSED_ARGUMENTS}")
+    endif()
 
     # add a target to generate API documentation with Doxygen
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-    add_custom_target(${doxygen_target_name}
+    add_custom_target(${DOXYGEN_TARGET}
                      ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                     COMMENT "Generating API documentation with Doxygen for ${doxygen_target_name} target" VERBATIM)
+                     COMMENT "Generating API documentation with Doxygen for ${DOXYGEN_TARGET} target" VERBATIM)
 
-    add_dependencies(doxygen_docs ${doxygen_target_name})
+    add_dependencies(doxygen_docs ${DOXYGEN_TARGET})
 
-    install(CODE "execute_process(COMMAND ${CMAKE_BUILD_TOOL} ${doxygen_target_name} WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}\")")
+    install(CODE "execute_process(COMMAND ${CMAKE_BUILD_TOOL} ${DOXYGEN_TARGET} WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}\")")
 
     install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/html" 
-            DESTINATION docs/doxygen/${doxygen_target_name} OPTIONAL)
+            DESTINATION docs/doxygen/${DOXYGEN_TARGET} OPTIONAL)
 
 endmacro(blt_add_doxygen_target)
 
 
 ##------------------------------------------------------------------------------
-## blt_add_sphinx_target(sphinx_target_name
+## blt_add_sphinx_target(TARGET       [sphinx_target_name]
 ##                       SOURCE_DIR   [source_dir]
 ##                       CONF_DIR     [conf_dir]
 ##                       DEPENDS      [dep1 ...])
 ##
 ## Creates a build target for invoking sphinx to generate docs
 ##------------------------------------------------------------------------------
-macro(blt_add_sphinx_target sphinx_target_name)
+macro(blt_add_sphinx_target)
     set(_sphinx_options)
     set(_sphinx_single_value_args
+        TARGET
         SOURCE_DIR
         CONF_DIR)
     set(_sphinx_multi_value_args
@@ -96,7 +110,7 @@ macro(blt_add_sphinx_target sphinx_target_name)
         unset(new_conf_dir_)
     endif()
 
-    add_custom_target(${sphinx_target_name}
+    add_custom_target(${SPHINX_TARGET}
         COMMAND ${SPHINX_EXECUTABLE}
                 -q
                 -b html
@@ -104,20 +118,20 @@ macro(blt_add_sphinx_target sphinx_target_name)
                 -d "${SPHINX_DOCTREE_DIR}"
                 "${SPHINX_SOURCE_DIR}"
                 "${SPHINX_HTML_DIR}"
-        COMMENT "Building HTML documentation with Sphinx for ${sphinx_target_name} target"
+        COMMENT "Building HTML documentation with Sphinx for ${SPHINX_TARGET} target"
         DEPENDS ${SPHINX_DEPENDS})
 
     # hook our new target into the docs dependency chain
-    add_dependencies(sphinx_docs ${sphinx_target_name})
+    add_dependencies(sphinx_docs ${SPHINX_TARGET})
 
     ######
     # This snippet makes sure if we do a make install w/o the optional "docs"
     # target built, it will be built during the install process.
     ######
 
-    install(CODE "execute_process(COMMAND ${CMAKE_BUILD_TOOL} ${sphinx_target_name} WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}\")")
+    install(CODE "execute_process(COMMAND ${CMAKE_BUILD_TOOL} ${SPHINX_TARGET} WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}\")")
 
     install(DIRECTORY "${SPHINX_HTML_DIR}" 
-            DESTINATION "docs/sphinx/${sphinx_target_name}" OPTIONAL)
+            DESTINATION "docs/sphinx/${SPHINX_TARGET}" OPTIONAL)
 
 endmacro(blt_add_sphinx_target)

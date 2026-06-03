@@ -28,5 +28,5 @@ add_subdirectory(tutorial/calc_pi)
 #------------------------------------------------------------------------------
 
 if (SPHINX_FOUND)
-    blt_add_sphinx_target(blt_sphinx_tutorial_docs)
+    blt_add_sphinx_target(TARGET blt_sphinx_tutorial_docs)
 endif()
