@@ -3,5 +3,5 @@
 #------------------------------------------------------------------------------
 
 if(SPHINX_FOUND)
-    blt_add_sphinx_target( calc_pi_sphinx )
+    blt_add_sphinx_target( TARGET calc_pi_sphinx )
 endif()
