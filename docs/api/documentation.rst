@@ -68,20 +68,21 @@ Let's say project A depends on project B.
 
 .. code-block:: cmake
 
-    set(PROJECT_A_STAGE_DIR "${CMAKE_CURRENT_BINARY_DIR}/_stage")
-    set(PROJECT_A_SOURCE_DIR "${PROJECT_A_STAGE_DIR}/src/docs")
+    set(PROJECT_B_SOURCE_DIR "${PROJECT_SOURCE_DIR}/project_b")
+    set(SPHINX_STAGE_DIR "${CMAKE_CURRENT_BINARY_DIR}/_stage")
+    set(SPHINX_SOURCE_DIR "${SPHINX_STAGE_DIR}/src/docs")
 
     add_custom_target(stage_my_docs
-      COMMAND ${CMAKE_COMMAND} -E remove_directory "${PROJECT_A_STAGE_DIR}"
-      COMMAND ${CMAKE_COMMAND} -E make_directory "${PROJECT_A_STAGE_DIR}"
-      COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_B_SOURCE_DIR}/src" "${PROJECT_A_STAGE_DIR}/src"
-      COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_B_SOURCE_DIR}/examples" "${PROJECT_A_STAGE_DIR}/examples"
-      COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_B_SOURCE_DIR}/tests" "${PROJECT_A_STAGE_DIR}/tests"
-      COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}" "${PROJECT_A_SOURCE_DIR}"
+      COMMAND ${CMAKE_COMMAND} -E remove_directory "${SPHINX_STAGE_DIR}"
+      COMMAND ${CMAKE_COMMAND} -E make_directory "${SPHINX_STAGE_DIR}"
+      COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_B_SOURCE_DIR}/src" "${SPHINX_STAGE_DIR}/src"
+      COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_B_SOURCE_DIR}/examples" "${SPHINX_STAGE_DIR}/examples"
+      COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_B_SOURCE_DIR}/tests" "${SPHINX_STAGE_DIR}/tests"
+      COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}" "${SPHINX_SOURCE_DIR}"
       COMMENT "Staging documentation from project A and B sources"
       VERBATIM)
 
     blt_add_sphinx_target(TARGET my_docs
-      SOURCE_DIR "${PROJECT_A_SOURCE_DIR}"
+      SOURCE_DIR "${SPHINX_SOURCE_DIR}"
       CONF_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
       DEPENDS stage_my_docs)
