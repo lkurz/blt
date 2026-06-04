@@ -28,35 +28,35 @@ macro(blt_add_doxygen_target)
     set(_doxygen_options)
     set(_doxygen_single_value_args TARGET)
     set(_doxygen_multi_value_args)
-    cmake_parse_arguments(DOXYGEN
+    cmake_parse_arguments(arg
                           "${_doxygen_options}"
                           "${_doxygen_single_value_args}"
                           "${_doxygen_multi_value_args}"
                           ${ARGN})
 
-    if(DOXYGEN_UNPARSED_ARGUMENTS)
-        message(FATAL_ERROR
-            "blt_add_doxygen_target received unexpected arguments: ${DOXYGEN_UNPARSED_ARGUMENTS}")
-    endif()
-
-    if(NOT DOXYGEN_TARGET)
+    if(NOT arg_TARGET)
         message(FATAL_ERROR
             "blt_add_doxygen_target requires TARGET to be specified")
     endif()
 
+    if(arg_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR
+            "blt_add_doxygen_target received unexpected arguments: ${arg_UNPARSED_ARGUMENTS}")
+    endif()
+
     # add a target to generate API documentation with Doxygen
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile @ONLY)
-    add_custom_target(${DOXYGEN_TARGET}
+    add_custom_target(${arg_TARGET}
                      ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
                      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-                     COMMENT "Generating API documentation with Doxygen for ${DOXYGEN_TARGET} target" VERBATIM)
+                     COMMENT "Generating API documentation with Doxygen for ${arg_TARGET} target" VERBATIM)
 
-    add_dependencies(doxygen_docs ${DOXYGEN_TARGET})
+    add_dependencies(doxygen_docs ${arg_TARGET})
 
-    install(CODE "execute_process(COMMAND ${CMAKE_BUILD_TOOL} ${DOXYGEN_TARGET} WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}\")")
+    install(CODE "execute_process(COMMAND ${CMAKE_BUILD_TOOL} ${arg_TARGET} WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}\")")
 
     install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/html" 
-            DESTINATION docs/doxygen/${DOXYGEN_TARGET} OPTIONAL)
+            DESTINATION docs/doxygen/${arg_TARGET} OPTIONAL)
 
 endmacro(blt_add_doxygen_target)
 
@@ -77,71 +77,76 @@ macro(blt_add_sphinx_target)
         CONF_DIR)
     set(_sphinx_multi_value_args
         DEPENDS)
-    cmake_parse_arguments(SPHINX
+    cmake_parse_arguments(arg
                           "${_sphinx_options}"
                           "${_sphinx_single_value_args}"
                           "${_sphinx_multi_value_args}"
                           ${ARGN})
 
-    if(SPHINX_UNPARSED_ARGUMENTS)
-        message(FATAL_ERROR
-            "blt_add_sphinx_target received unexpected arguments: ${SPHINX_UNPARSED_ARGUMENTS}")
-    endif()
-
-    if(NOT SPHINX_TARGET)
+    if(NOT arg_TARGET)
         message(FATAL_ERROR
             "blt_add_sphinx_target requires TARGET to be specified")
     endif()
 
-    if(NOT SPHINX_SOURCE_DIR)
-        set(SPHINX_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+    if(arg_UNPARSED_ARGUMENTS)
+        message(FATAL_ERROR
+            "blt_add_sphinx_target received unexpected arguments: ${arg_UNPARSED_ARGUMENTS}")
+    endif()
+
+    # Path to base of Sphinx documentation
+    if(arg_SOURCE_DIR)
+        set(_sphinx_source_dir "${arg_SOURCE_DIR}")
+    else()
+        set(_sphinx_source_dir "${CMAKE_CURRENT_SOURCE_DIR}")
     endif()
 
     # Path to Sphinx conf.py configuration file
-    if(NOT SPHINX_CONF_DIR)
-        set(SPHINX_CONF_DIR "${SPHINX_SOURCE_DIR}")
+    if(arg_CONF_DIR)
+        set(_sphinx_conf_dir "${arg_CONF_DIR}")
+    else()
+        set(_sphinx_conf_dir "${_sphinx_source_dir}")
     endif()
 
     # Sphinx cache with pickled ReST documents
-    set(SPHINX_DOCTREE_DIR "${CMAKE_CURRENT_BINARY_DIR}/_doctrees")
+    set(_sphinx_doctree_dir "${CMAKE_CURRENT_BINARY_DIR}/_doctrees")
 
     # HTML output directory
-    set(SPHINX_HTML_DIR "${CMAKE_CURRENT_BINARY_DIR}/html")
+    set(_sphinx_html_dir "${CMAKE_CURRENT_BINARY_DIR}/html")
 
     # support both direct use of a conf.py file and a cmake-configured
     # sphinx input file (conf.py.in). The cmake-configured input file is
     # preferred when both exist.
-    if(EXISTS "${SPHINX_CONF_DIR}/conf.py.in")
-        set(new_conf_dir_ "${CMAKE_CURRENT_BINARY_DIR}/_conf")
-        configure_file("${SPHINX_CONF_DIR}/conf.py.in"
+    if(EXISTS "${_sphinx_conf_dir}/conf.py.in")
+        set(_new_conf_dir "${CMAKE_CURRENT_BINARY_DIR}/_conf")
+        configure_file("${_sphinx_conf_dir}/conf.py.in"
                        "${new_conf_dir_}/conf.py"
                        @ONLY)
-        set(SPHINX_CONF_DIR "${new_conf_dir_}")
-        unset(new_conf_dir_)
+        set(_sphinx_conf_dir "${_new_conf_dir}")
+        unset(_new_conf_dir)
     endif()
 
-    add_custom_target(${SPHINX_TARGET}
+    add_custom_target(${arg_TARGET}
         COMMAND ${SPHINX_EXECUTABLE}
                 -q
                 -b html
-                -c "${SPHINX_CONF_DIR}"
-                -d "${SPHINX_DOCTREE_DIR}"
-                "${SPHINX_SOURCE_DIR}"
-                "${SPHINX_HTML_DIR}"
-        COMMENT "Building HTML documentation with Sphinx for ${SPHINX_TARGET} target"
-        DEPENDS ${SPHINX_DEPENDS})
+                -c "${_sphinx_conf_dir}"
+                -d "${_sphinx_doctree_dir}"
+                "${_sphinx_source_dir}"
+                "${_sphinx_html_dir}"
+        COMMENT "Building HTML documentation with Sphinx for ${arg_TARGET} target"
+        DEPENDS ${arg_DEPENDS})
 
     # hook our new target into the docs dependency chain
-    add_dependencies(sphinx_docs ${SPHINX_TARGET})
+    add_dependencies(sphinx_docs ${arg_TARGET})
 
     ######
     # This snippet makes sure if we do a make install w/o the optional "docs"
     # target built, it will be built during the install process.
     ######
 
-    install(CODE "execute_process(COMMAND ${CMAKE_BUILD_TOOL} ${SPHINX_TARGET} WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}\")")
+    install(CODE "execute_process(COMMAND ${CMAKE_BUILD_TOOL} ${arg_TARGET} WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}\")")
 
-    install(DIRECTORY "${SPHINX_HTML_DIR}" 
-            DESTINATION "docs/sphinx/${SPHINX_TARGET}" OPTIONAL)
+    install(DIRECTORY "${_sphinx_html_dir}" 
+            DESTINATION "docs/sphinx/${arg_TARGET}" OPTIONAL)
 
 endmacro(blt_add_sphinx_target)
