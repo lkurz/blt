@@ -1,6 +1,6 @@
 .. # Copyright (c) 2017-2025, Lawrence Livermore National Security, LLC and
 .. # other BLT Project Developers. See the top-level LICENSE file for details
-.. # 
+.. #
 .. # SPDX-License-Identifier: (BSD-3-Clause)
 
 .. _ExportingTargets:
@@ -10,67 +10,104 @@ Exporting Targets
 
 BLT provides several built-in targets for commonly used libraries:
 
-``mpi``
+``blt::mpi``
     Available when ``ENABLE_MPI`` is ``ON``
 
-``openmp``
+``blt::openmp``
     Available when ``ENABLE_OPENMP`` is ``ON``
 
-``cuda`` and ``cuda_runtime``
+``blt::cuda`` and ``blt::cuda_runtime``
     Available when ``ENABLE_CUDA`` is ``ON``
 
-``blt_hip`` and ``blt_hip_runtime``
+``blt::hip`` and ``blt::hip_runtime``
     Available when ``ENABLE_HIP`` is ``ON``
 
-These targets can be made exportable in order to make them available to users of
-your project via CMake's ``install()`` command.  Setting BLT's ``BLT_EXPORT_THIRDPARTY``
-option to ``ON`` will mark all active targets in the above list as ``EXPORTABLE``
-(see the :ref:`blt_import_library` API documentation for more info).
+Projects often use these targets in their own exported targets.  For example,
+an installed library target may have a public dependency on ``blt::mpi`` or
+``blt::openmp``.  Downstream projects that import that installed library need the
+same BLT target names to exist when the project's generated targets file is
+loaded.
 
-.. note::  As with other ``EXPORTABLE`` targets created by :ref:`blt_import_library`,
-    these targets should be prefixed with the name of the project.  Either the ``EXPORT_NAME``
-    target property or the ``NAMESPACE`` option to CMake's ``install``
-    command can be used to modify the name of an installed target.
+The recommended approach is to install BLT's target setup files next to your
+project's installed CMake package configuration file.  Your configuration file
+then includes ``BLTSetupTargets.cmake`` before it includes the CMake-generated
+``<project>-targets.cmake`` file.  This recreates the BLT targets used by your
+project before CMake evaluates the imported targets that depend on them.
 
-.. note:: If a target in your project is added to an export set, any of its dependencies
-    marked ``EXPORTABLE`` must be added to the same export set.  Failure to add them will
-    result in a CMake error in the exporting project.
+This approach is preferred over exporting the BLT targets themselves.  It keeps
+downstream projects from needing to duplicate BLT's target setup logic, and it
+avoids early evaluation of generator expressions in the exported BLT targets
+that can otherwise cause incorrect compile or link flags to be used downstream.
 
-.. note:: The recommended usage of the HIP targets is via the ``blt::hip`` and
-    ``blt::hip_runtime`` aliases. Alias targets cannot be exported, so the
-    ``blt_hip``/``blt_hip_runtime`` names can be used for this purpose.
+Installing BLT Target Setup Files
+---------------------------------
 
-Typical usage of the ``BLT_EXPORT_THIRDPARTY`` option is as follows:
+Call ``blt_install_tpl_setups`` with the same destination used for your
+project's installed CMake configuration file.  The destination is relative to
+the install prefix.
 
 .. code-block:: cmake
 
-    # BLT configuration - enable MPI
+    cmake_minimum_required(VERSION 3.14)
+
+    project(example LANGUAGES CXX)
+
+    # BLT configuration - enable MPI before loading BLT.
     set(ENABLE_MPI ON CACHE BOOL "")
-    # and mark the subsequently created MPI target as exportable
-    set(BLT_EXPORT_THIRDPARTY ON CACHE BOOL "")
-    # Both of the above must happen before SetupBLT.cmake is included
     include(/path/to/SetupBLT.cmake)
 
-    # Later, a project might mark a target as dependent on MPI
-    blt_add_executable( NAME    example_1
-                        SOURCES example_1.cpp
-                        DEPENDS_ON blt::mpi )
+    set(example_config_dir lib/cmake/example)
 
-    # Add the example_1 target to the example-targets export set
-    install(TARGETS example_1 EXPORT example-targets)
+    # Install the BLT setup files beside example-config.cmake.
+    blt_install_tpl_setups(DESTINATION ${example_config_dir})
 
-    # Add BLT's targets to the same export set - this is required
-    # because the mpi target was marked exportable
-    blt_export_tpl_targets(EXPORT example-targets)
+    blt_add_library(
+        NAME example
+        SOURCES example.cpp
+        HEADERS example.hpp
+        DEPENDS_ON blt::mpi)
 
-To avoid collisions with projects that import "example-targets", it is recommended to provide
-a namespace for the ``mpi`` target:
+    install(FILES example.hpp DESTINATION include)
+
+    install(TARGETS example
+        EXPORT example-targets
+        DESTINATION lib)
+
+    install(EXPORT example-targets
+        DESTINATION ${example_config_dir})
+
+    install(FILES example-config.cmake
+        DESTINATION ${example_config_dir})
+
+The ``blt_install_tpl_setups`` call installs ``BLTSetupTargets.cmake`` and the
+supporting files needed to recreate the enabled BLT targets when your package is
+found by another project.
+
+Including BLT Setup From Your Config File
+-----------------------------------------
+
+Your installed project config file should include ``BLTSetupTargets.cmake``
+before it includes your generated targets file:
 
 .. code-block:: cmake
 
-    blt_export_tpl_targets(EXPORT example-targets NAMESPACE example)
+    # example-config.cmake
 
-With this approach the ``example_1`` target's exported name is unchanged - a 
-project that imports the ``example-targets`` export set will have ``example_1``
-and ``example::mpi`` targets made available.  The imported ``example_1`` will
-depend on ``example::mpi``.
+    include("${CMAKE_CURRENT_LIST_DIR}/BLTSetupTargets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/example-targets.cmake")
+
+When a downstream project calls ``find_package(example)``,
+``BLTSetupTargets.cmake`` runs the setup needed for the BLT targets used by
+``example``.  After those targets are available, ``example-targets.cmake`` can
+create the imported ``example`` target and attach its dependency on ``blt::mpi``.
+
+Notes
+-----
+
+``blt_install_tpl_setups`` is intended to replace the deprecated
+``blt_export_tpl_targets`` and ``BLT_EXPORT_THIRDPARTY`` export-set workflow.
+Do not use both approaches in the same project.
+
+Use the ``blt::`` target names in your project's ``DEPENDS_ON`` lists.  The
+installed setup files recreate these target names for downstream projects before
+your generated targets file is loaded.

@@ -552,7 +552,8 @@ blt_export_tpl_targets
                            [NAMESPACE <namespace>])
 
 .. warning::
-    This macro is now deprecated in favor of ``blt_install_tpl_setups`` due to problems with
+    This macro and the ``BLT_EXPORT_THIRDPARTY`` export-set workflow are now
+    deprecated in favor of ``blt_install_tpl_setups`` due to problems with
     evaluating generator expressions early.
 
 Install BLT-provided third-party library targets to the given export set.
@@ -563,10 +564,11 @@ EXPORT
 NAMESPACE
   Namespace prefix for each exported target
 
-This macro will add all the enabled third-party library targets (e.g. ``cuda``,
-``blt::hip``, ``mpi``, etc.) to the given export set, with the optional namespace. This
-allows downstream projects to import and use any targets that depend on BLT
-targets, without the downstream project itself requiring the use of BLT.
+This macro will add all the enabled third-party library targets (e.g. targets
+corresponding to ``blt::cuda``, ``blt::hip``, ``blt::mpi``, etc.) to the given
+export set, with the optional namespace. This allows downstream projects to
+import and use any targets that depend on BLT targets, without the downstream
+project itself requiring the use of BLT.
 
 .. note::
   It is highly recommended that the NAMESPACE argument is used to ensure that
