@@ -9,7 +9,6 @@ Advanced Topics
 This section includes subpages on advanced topics such as:
 
     * :ref:`PortableCompilerFlags` : Managing compiler flags across compiler families
-    * :ref:`ExportingTargets` : Exporting your project's CMake Targets for others to use
     * :ref:`ObjectLibraries` : A collection of object files that are not linked or archived into a library 
 
 
@@ -17,5 +16,4 @@ This section includes subpages on advanced topics such as:
     :hidden:
 
     portable_compiler_flags
-    exporting_targets
     object_libraries

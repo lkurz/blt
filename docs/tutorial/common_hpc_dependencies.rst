@@ -22,7 +22,7 @@ This creates a true CMake imported target that is inherited properly through the
 dependency graph.
 
 .. note::
-    BLT also supports exporting its third-party targets via the ``BLT_EXPORT_THIRDPARTY`` option.
+    BLT also supports installing setup files that recreate these targets for downstream projects.
     See :ref:`ExportingTargets` for more information.
 
 You have already seen one use of ``DEPENDS_ON`` for a BLT dependency, ``gtest``, in ``test_1``:
@@ -197,4 +197,3 @@ Here is an example of using the BLT HIP target to create an executable:
    :start-after: _blt_tutorial_hip_executable_start
    :end-before:  _blt_tutorial_hip_executable_end
    :language: cmake
-

@@ -15,7 +15,7 @@ and imported targets. We have logically broken this topic into two groups:
 
 :ref:`CommonHPCDependencies`
    Dependencies such as MPI, CUDA, HIP, and OpenMP, are bundled and ready to use included
-   with BLT as regular named CMake targets. For example, just adding ``openmp`` to any ``DEPENDS_ON``
+   with BLT as regular namespaced CMake targets. For example, just adding ``blt::openmp`` to any ``DEPENDS_ON``
    will add the necessary OpenMP compiler and link flags to any target. 
 
 :ref:`ThirdPartyLibraries`
