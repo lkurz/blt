@@ -28,6 +28,11 @@ an installed library target may have a public dependency on ``blt::mpi`` or
 same BLT target names to exist when the project's generated targets file is
 loaded.
 
+.. note::
+  Use the ``blt::`` target names in your project's ``DEPENDS_ON`` lists.  The
+  installed setup files recreate these target names for downstream projects before
+  your generated targets file is loaded.
+
 The recommended approach is to install BLT's target setup files next to your
 project's installed CMake package configuration file.  Your configuration file
 then includes ``BLTSetupTargets.cmake`` before it includes the CMake-generated
@@ -83,6 +88,12 @@ The ``blt_install_tpl_setups`` call installs ``BLTSetupTargets.cmake`` and the
 supporting files needed to recreate the enabled BLT targets when your package is
 found by another project.
 
+.. note::
+  ``blt_install_tpl_setups`` is intended to replace the deprecated
+  ``blt_export_tpl_targets`` and ``BLT_EXPORT_THIRDPARTY`` export-set workflow.
+  Do not use both approaches in the same project.
+
+
 Including BLT Setup From Your Config File
 -----------------------------------------
 
@@ -101,13 +112,3 @@ When a downstream project calls ``find_package(example)``,
 ``example``.  After those targets are available, ``example-targets.cmake`` can
 create the imported ``example`` target and attach its dependency on ``blt::mpi``.
 
-Notes
------
-
-``blt_install_tpl_setups`` is intended to replace the deprecated
-``blt_export_tpl_targets`` and ``BLT_EXPORT_THIRDPARTY`` export-set workflow.
-Do not use both approaches in the same project.
-
-Use the ``blt::`` target names in your project's ``DEPENDS_ON`` lists.  The
-installed setup files recreate these target names for downstream projects before
-your generated targets file is loaded.
