@@ -2,8 +2,7 @@ name: Build tutorial image
 
 on:
   push:
-  # TODO current branch listed here for testing, remove later
-    branches: ["develop", "add-docker-image"]
+    branches: ["develop"]
   pull_request:
     branches: ["develop"]
 
