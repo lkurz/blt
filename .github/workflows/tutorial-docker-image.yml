@@ -52,7 +52,7 @@ jobs:
         run: |
           docker run --rm "${{ steps.tags.outputs.sha }}" bash -lc '
             cd /home/bltdev/blt/docs/tutorial/calc_pi &&
-            cmake -C /home/bltdev/blt/host-configs/other/radiuss-aws-ec2.cmake -B build -DENABLE_GTEST=ON &&
+            cmake -C /home/bltdev/blt/host-configs/other/radiuss-docker.cmake -B build -DENABLE_GTEST=ON &&
             cmake --build build -j2 &&
             cd build && ctest --output-on-failure'
 

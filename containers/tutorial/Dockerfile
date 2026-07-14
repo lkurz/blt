@@ -4,7 +4,7 @@
 # Runs openvscode-server (browser-based VSCode) under supervisord so tutorial
 # participants can work through the BLT tutorial (docs/tutorial) in their
 # browser. Provides the C/C++/Fortran + OpenMPI toolchain expected by
-# host-configs/other/radiuss-aws-ec2.cmake.
+# host-configs/other/radiuss-docker.cmake.
 ###############################################################################
 
 FROM ghcr.io/llnl/radiuss:gcc-11-ubuntu-22.04
